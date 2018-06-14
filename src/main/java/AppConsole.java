@@ -13,10 +13,10 @@ public class AppConsole {
     public static void main(String[] args) {
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("UnitMenu");
-//        ClientDAO clientDAO = new ClientDAOIml(emf.createEntityManager());
-//        Scanner scan = new Scanner(System.in);
-//        ManagerService managerService = new ConsoleManagerServise(scan, clientDAO);
+        ClientDAO clientDAO = new ClientDAOIml(emf.createEntityManager());
+        Scanner scan = new Scanner(System.in);
+        ManagerService managerService = new ConsoleManagerServise(scan, clientDAO);
 
-//        managerService.createNewClient();
+        managerService.createNewClient();
     }
 }
