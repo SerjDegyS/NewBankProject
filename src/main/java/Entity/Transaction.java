@@ -5,21 +5,26 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "Transactions")
-public class Transaction extends Entyti {
+public class Transaction extends Entity {
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "PAYER_ID")
-    private Account payerAccount;
+//    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,
+//            CascadeType.PERSIST, CascadeType.REFRESH})
+//    @JoinColumn(name = "PAYER_ID", referencedColumnName = "id")
+//    private Account payerAccount;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "PAYEE_ID")
-    private Account payeeAccount;
+    @JoinTable(name = "TRANSACTION_ACCOUNT",
+            joinColumns = {@JoinColumn(name = "TRANSACTION_ID", referencedColumnName = "ID")},
+            inverseJoinColumns = {@JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ID")})
+    private Map<String, Account> transactionAccounts = new HashMap<String, Account>();
+
 
     @CreationTimestamp
     @Column(name = "TIMESTAMP", nullable = false, updatable = false)
@@ -33,10 +38,9 @@ public class Transaction extends Entyti {
 
     public Transaction() {    }
 
-    public Transaction(Account payerAccount, Account payeeAccount,
+    public Transaction(Map<String, Account> transactionAccounts,
                        BigDecimal amount, Boolean status, String description) {
-        this.payerAccount = payerAccount;
-        this.payeeAccount = payeeAccount;
+        this.transactionAccounts = transactionAccounts;
         this.timestamp = ZonedDateTime.now();
         this.amount = amount;
         this.status = status;
@@ -44,19 +48,27 @@ public class Transaction extends Entyti {
     }
 
     public Account getPayerAccount() {
-        return payerAccount;
+        return transactionAccounts.get("payer");
     }
 
     public void setPayerAccount(Account payerAccount) {
-        this.payerAccount = payerAccount;
+        this.transactionAccounts.put("payer", payerAccount);
     }
 
     public Account getPayeeAccount() {
-        return payeeAccount;
+        return transactionAccounts.get("payee");
     }
 
     public void setPayeeAccount(Account payeeAccount) {
-        this.payeeAccount = payeeAccount;
+        this.transactionAccounts.put("payee", payeeAccount);
+    }
+
+    public void setTransactionAccounts(Map<String, Account> transactionAccounts) {
+        this.transactionAccounts = transactionAccounts;
+    }
+
+    public Map<String, Account> getTransactionAccounts() {
+        return transactionAccounts;
     }
 
     public ZonedDateTime getTimestamp() {
@@ -94,8 +106,8 @@ public class Transaction extends Entyti {
     @Override
     public String toString() {
         return "Transaction{" +
-                "  \n\tpayerAccount=" + payerAccount +
-                ", \n\tpayeeAccount=" + payeeAccount +
+                "  \n\tpayerAccount=" + transactionAccounts.get("payer") +
+                ", \n\tpayeeAccount=" + transactionAccounts.get("payee") +
                 ", \n\ttimestamp=" + timestamp +
                 ", \n\tamount=" + amount +
                 ", \n\tstatus=" + status +

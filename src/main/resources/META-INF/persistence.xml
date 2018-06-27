@@ -8,12 +8,22 @@
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/bankdb"/>
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:mysql://localhost:3306/bankdb?serverTimezone=Europe/Kiev"/>
             <property name="javax.persistence.jdbc.user" value="root" />
             <property name="javax.persistence.jdbc.password" value="root" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <property name="c3p0.min_size" value="5"/>
+            <property name="c3p0.max_size" value="20"/>
+
+            <!--<property name="c3p0.timeout">300</property>-->
+            <!--<property name="c3p0.max_statements">50</property>-->
+            <!--<property name="c3p0.idle_test_period">3000</property>-->
+
+
         </properties>
 
     </persistence-unit>

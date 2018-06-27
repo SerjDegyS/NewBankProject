@@ -1,19 +1,19 @@
 package DAO;
 
-import Entity.Account;
 import Entity.Client;
-import Entity.Transaction;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 public interface ClientDAO {
 
     boolean addClient(Client client);
-    Client getClient(Long id);
+
+    List<Client> getAll();
+
     Client getClientByPhoneNumber(String phoneNumber);
-    boolean addAccountToClient(Account account, Client client);
 
     void updateClient(Client client);
+
     boolean deleteClient(String phoneNumber);
 
 }

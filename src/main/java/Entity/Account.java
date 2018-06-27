@@ -4,10 +4,16 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "ACCOUNT")
-public class Account extends Entyti {
+@NamedQuery(name = "Account.getAccountsByClientId", query = "SELECT a FROM Account a WHERE a.client.id =:id")
+public class Account extends Entity {
+
+//    @Id
+//    @GeneratedValue
+//    private long id;
 
     @Column(name = "CURRENCY_TYPE", nullable = false, updatable = false)
     @Enumerated(EnumType.STRING)
@@ -16,12 +22,26 @@ public class Account extends Entyti {
     @Column(name = "BALANCE", nullable = false, precision = 10, scale = 2)
     private BigDecimal balance;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "CLIENT_ID",unique = true)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "CLIENT_ID")
     private Client client;
 
-    @OneToMany(mappedBy ="PAYER_ID,PAYEE_ID", cascade =CascadeType.PERSIST,orphanRemoval = false)
-    private List<Transaction> transactionList;
+    @ManyToMany(mappedBy = "transactionAccounts", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<Transaction> transactionList = new ArrayList<Transaction>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return currencyType == account.currencyType;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(currencyType);
+    }
 
     public Account() {    }
 
@@ -37,7 +57,7 @@ public class Account extends Entyti {
         return currencyType;
     }
 
-    public void setCurrencyTtype(CurrencyType currencyTtype) {
+    public void setCurrencyTtype(CurrencyType currencyType) {
         this.currencyType = currencyType;
     }
 
@@ -68,10 +88,10 @@ public class Account extends Entyti {
     @Override
     public String toString() {
         return "Account{" +
-                "  \n\tcurrencyTtype=" + currencyType +
-                ", \n\tbalance=" + balance +
-                ", \n\tclient=" + client +
-                ", \n\ttransactionList=" + transactionList +
+                "currencyType=" + currencyType +
+                ", balance=" + balance +
+//                ", client=" + client +
+//                ", transactionList=" + transactionList +
                 '}';
     }
 }

@@ -1,15 +1,12 @@
 package Entity;
 
-import org.junit.experimental.theories.DataPoint;
-
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "EXCHANGE_RATE")
-public class ExchangeRate extends Entyti {
+public class ExchangeRate extends Entity {
 
     @Column(name = "USD", nullable = false)
     private double usd;

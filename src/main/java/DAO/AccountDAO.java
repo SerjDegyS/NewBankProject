@@ -1,14 +1,20 @@
 package DAO;
 
+import Entity.Account;
+import Entity.CurrencyType;
 import Entity.Transaction;
 
 import java.util.List;
 
 public interface AccountDAO {
 
-    boolean addTransaction(Transaction transaction);
+    boolean addAccount(Account account);
 
-    boolean setTransaction(List<Transaction> transactions);
+    Account getAccount(Long idClient, CurrencyType currencyType);
 
-    List<Transaction> getTransactionList();
+    List<Account> getAll();
+
+    List<Account> getAllAccountsByClientId(Long id);
+
+    boolean deleteAccount(Account account);
 }

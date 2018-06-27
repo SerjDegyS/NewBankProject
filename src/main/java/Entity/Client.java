@@ -1,15 +1,13 @@
 package Entity;
 
 import javax.persistence.*;
-import java.lang.reflect.Array;
-import java.security.PrivateKey;
 import java.util.*;
 
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "CLIENT")
-@NamedQuery(name = "Client.findByPhoneNumber", query = "SELECT c FROM Client c WHERE c.PHONE =:number")
-public class Client extends Entyti {
+@NamedQuery(name = "Client.findByPhoneNumber", query = "SELECT c FROM Client c WHERE c.phone =:number")
+public class Client extends Entity {
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -20,9 +18,9 @@ public class Client extends Entyti {
     @Column(name = "EMAIL", unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "CLIENT",cascade = CascadeType.ALL,
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL,
     orphanRemoval = false)
-    private List<Account> accountList;
+    private List<Account> accountList = new ArrayList<Account>();
 
     public Client() { }
 
@@ -36,7 +34,12 @@ public class Client extends Entyti {
     }
 
     public void addAccount(Account account){
-        this.accountList.add(account);
+        if (this.accountList.contains(account)) {
+            System.out.println(this + " already contains account: " + account.getCurrencyTtype());
+            return;
+        } else {
+            this.accountList.add(account);
+        }
     }
 
     public String getName() {
@@ -79,6 +82,14 @@ public class Client extends Entyti {
         this.accountList = accountList;
     }
 
+    public void showAccounts() {
+        accountList.forEach(System.out::print);
+//        for (Account account:accountList) {
+//            System.out.print(account.getCurrencyTtype());
+//        }
+
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -86,7 +97,6 @@ public class Client extends Entyti {
                 ", \n\tsurname='" + surname + '\'' +
                 ", \n\tphone='" + phone + '\'' +
                 ", \n\temail='" + email + '\'' +
-                ", \n\taccountList=" + accountList +
                 '}';
     }
 }
